@@ -83,10 +83,15 @@ export default function Zine({
         const pageFlip = bookRef.current?.pageFlip();
         const currentPage = pageFlip?.getCurrentPageIndex() ?? 0;
 
-        // Only trigger open animation when flipping from cover
+        // Opening: flipping from cover
         if (currentPage === 0 && !isOpen) {
           setIsOpen(true);
           onOpenChange?.(true);
+        }
+        // Closing: flipping back to cover from page 1
+        else if (currentPage === 1 && isOpen) {
+          setIsOpen(false);
+          onOpenChange?.(false);
         }
       }
     },
