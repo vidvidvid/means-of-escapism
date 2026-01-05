@@ -14,19 +14,21 @@ const Zine = dynamic(() => import("@/components/Zine"), {
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-purple-900 via-indigo-900 to-slate-900">
-      {/* Background pattern */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
-
-      {/* Floating gradient orbs for visual interest */}
-      <div className="absolute top-1/4 left-1/4 h-64 w-64 rounded-full bg-pink-500/20 blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-blue-500/20 blur-3xl" />
-
+    <main className="relative min-h-screen w-full overflow-hidden bg-black">
       {/* Zine container */}
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center p-8">
-        <Zine pdfUrl="/zine.pdf" pageWidth={500} pageHeight={658} />
+        <div className="relative">
+          {/* Magical glow behind the book */}
+          <div className="absolute -inset-16 pointer-events-none">
+            <div className="absolute inset-0 bg-white/15 blur-3xl rounded-full animate-glow-1" />
+            <div className="absolute inset-0 bg-white/10 blur-3xl rounded-full animate-glow-2" />
+            <div className="absolute inset-0 bg-white/8 blur-2xl rounded-full animate-glow-3" />
+          </div>
 
-        <p className="mt-6 font-serif italic text-white/40 tracking-widest text-xs">
+          <Zine pdfUrl="/zine.pdf" pageWidth={500} pageHeight={658} />
+        </div>
+
+        <p className="mt-6 font-serif italic text-white/30 tracking-widest text-xs relative z-10">
           ~ flutter through the pages ~
         </p>
       </div>

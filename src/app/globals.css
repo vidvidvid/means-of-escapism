@@ -32,3 +32,73 @@ html {
   margin: 0;
   padding: 0;
 }
+
+/* Magical glow animations - irregular pulsing */
+@keyframes glow-1 {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  33% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+  66% {
+    opacity: 0.5;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes glow-2 {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    opacity: 0.7;
+    transform: scale(1.15) rotate(2deg);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.9) rotate(-1deg);
+  }
+  75% {
+    opacity: 0.6;
+    transform: scale(1.05) rotate(1deg);
+  }
+}
+
+@keyframes glow-3 {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  20% {
+    opacity: 0.6;
+    transform: scale(1.08);
+  }
+  40% {
+    opacity: 0.3;
+    transform: scale(0.92);
+  }
+  60% {
+    opacity: 0.7;
+    transform: scale(1.12);
+  }
+  80% {
+    opacity: 0.5;
+    transform: scale(0.97);
+  }
+}
+
+.animate-glow-1 {
+  animation: glow-1 8s ease-in-out infinite;
+}
+
+.animate-glow-2 {
+  animation: glow-2 12s ease-in-out infinite;
+}
+
+.animate-glow-3 {
+  animation: glow-3 10s ease-in-out infinite;
+}
