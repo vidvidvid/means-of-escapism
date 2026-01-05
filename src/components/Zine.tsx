@@ -60,10 +60,13 @@ export default function Zine({
   const onDocumentLoadSuccess = useCallback(
     ({ numPages }: { numPages: number }) => {
       setNumPages(numPages);
-      setIsLoading(false);
-      onLoad?.();
-      // Trigger fade-in after a tiny delay
-      setTimeout(() => setIsVisible(true), 50);
+      // TODO: Remove this mock delay - just for testing loader
+      // setTimeout(() => {
+        setIsLoading(false);
+        onLoad?.();
+        // Trigger fade-in after a tiny delay
+        setTimeout(() => setIsVisible(true), 50);
+      // }, 3000);
     },
     [onLoad]
   );
@@ -134,9 +137,44 @@ export default function Zine({
           <div className="absolute bottom-0 right-1/3 w-0.5 h-0.5 bg-white/70 rounded-full animate-sparkle-1" />
           <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-white/30 rounded-full animate-sparkle-2" />
         </div>
-        {/* Central glow */}
-        <div className="w-16 h-16 rounded-full bg-white/5 animate-pulse flex items-center justify-center">
-          <div className="w-8 h-8 rounded-full bg-white/10 animate-ping" />
+        {/* Fairycore orbiting sparkles */}
+        <div className="relative w-20 h-20">
+          {/* Soft center glow */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-full bg-white/10 blur-md" />
+          </div>
+          {/* Simple spinning spiral */}
+          <div className="absolute inset-0 flex items-center justify-center animate-spin-slow-reverse">
+            <svg
+              className="w-10 h-10 opacity-50"
+              viewBox="0 0 100 100"
+              fill="none"
+            >
+              <path
+                d="M50 50 C50 47, 53 47, 53 50 C53 55, 45 55, 45 50 C45 42, 58 42, 58 50 C58 61, 39 61, 39 50 C39 36, 64 36, 64 50 C64 67, 33 67, 33 50 C33 30, 70 30, 70 50"
+                stroke="white"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
+          {/* Inner orbit - fast */}
+          <div className="absolute inset-0 animate-orbit-1">
+            <div className="absolute top-1/2 left-0 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white/60 blur-[1px] shadow-[0_0_6px_rgba(255,255,255,0.5)]" />
+          </div>
+          {/* Middle orbit - medium */}
+          <div className="absolute inset-[-8px] animate-orbit-2">
+            <div className="absolute top-1/2 right-0 -translate-y-1/2 w-2 h-2 rounded-full bg-white/40 blur-[1px] shadow-[0_0_8px_rgba(255,255,255,0.4)]" />
+          </div>
+          {/* Outer orbit - slow */}
+          <div className="absolute inset-[-16px] animate-orbit-3">
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-white/50 blur-[0.5px] shadow-[0_0_4px_rgba(255,255,255,0.6)]" />
+          </div>
+          {/* Counter-rotating ring */}
+          <div className="absolute inset-[-4px] animate-orbit-reverse">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-white/30 blur-[1px]" />
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0.5 h-0.5 rounded-full bg-white/20 blur-[0.5px]" />
+          </div>
         </div>
       </div>
       <p className="font-serif italic text-white/30 tracking-widest text-xs">
