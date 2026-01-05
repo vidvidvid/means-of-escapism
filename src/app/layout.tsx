@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Means of Escapism",
   description: "A zine viewer",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

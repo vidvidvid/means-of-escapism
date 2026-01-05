@@ -54,6 +54,8 @@ export default function Zine({
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const bookRef = useRef<typeof HTMLFlipBook>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const lastClickX = useRef<number | null>(null);
 
   const onDocumentLoadSuccess = useCallback(
     ({ numPages }: { numPages: number }) => {
@@ -75,6 +77,16 @@ export default function Zine({
     [onOpenChange]
   );
 
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const midpoint = rect.width / 2;
+      // Store whether click was on left (backward) or right (forward) side
+      lastClickX.current = clickX < midpoint ? -1 : 1;
+    }
+  }, []);
+
   const onChangeState = useCallback(
     (e: { data: string }) => {
       // "flipping" state means the flip animation just started
@@ -82,17 +94,21 @@ export default function Zine({
         // @ts-expect-error - pageFlip types incomplete
         const pageFlip = bookRef.current?.pageFlip();
         const currentPage = pageFlip?.getCurrentPageIndex() ?? 0;
+        const clickedLeft = lastClickX.current === -1;
 
-        // Opening: flipping from cover
+        // Opening: flipping from cover (always forward)
         if (currentPage === 0 && !isOpen) {
           setIsOpen(true);
           onOpenChange?.(true);
         }
-        // Closing: flipping back to cover from page 1
-        else if (currentPage === 1 && isOpen) {
+        // Closing: on page 1 and clicked left side (going backward to cover)
+        else if (currentPage === 1 && isOpen && clickedLeft) {
           setIsOpen(false);
           onOpenChange?.(false);
         }
+
+        // Reset click tracking
+        lastClickX.current = null;
       }
     },
     [onOpenChange, isOpen]
@@ -101,12 +117,41 @@ export default function Zine({
   // Create array of page numbers
   const pages = Array.from({ length: numPages }, (_, i) => i + 1);
 
+  const loadingSpinner = (
+    <div className="flex flex-col items-center justify-center gap-4">
+      <div className="relative flex items-center justify-center">
+        {/* Small circular glow behind */}
+        <div className="absolute w-32 h-32 pointer-events-none">
+          <div className="absolute inset-0 bg-white/10 blur-2xl rounded-full animate-glow-1" />
+          <div className="absolute inset-0 bg-white/8 blur-2xl rounded-full animate-glow-2" />
+          <div className="absolute inset-0 bg-white/5 blur-xl rounded-full animate-glow-3" />
+        </div>
+        {/* Floating sparkles */}
+        <div className="absolute w-24 h-24">
+          <div className="absolute top-0 left-1/4 w-1 h-1 bg-white/60 rounded-full animate-sparkle-1" />
+          <div className="absolute top-1/3 right-0 w-1.5 h-1.5 bg-white/40 rounded-full animate-sparkle-2" />
+          <div className="absolute bottom-1/4 left-0 w-1 h-1 bg-white/50 rounded-full animate-sparkle-3" />
+          <div className="absolute bottom-0 right-1/3 w-0.5 h-0.5 bg-white/70 rounded-full animate-sparkle-1" />
+          <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-white/30 rounded-full animate-sparkle-2" />
+        </div>
+        {/* Central glow */}
+        <div className="w-16 h-16 rounded-full bg-white/5 animate-pulse flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full bg-white/10 animate-ping" />
+        </div>
+      </div>
+      <p className="font-serif italic text-white/30 tracking-widest text-xs">
+        ~ summoning ~
+      </p>
+    </div>
+  );
+
   return (
     <div
       className={`zine-container flex flex-col items-center transition-transform duration-700 ease-out ${
         isOpen ? "translate-x-0" : "-translate-x-[250px]"
       }`}
     >
+      {isLoading && loadingSpinner}
       <Document
         file={pdfUrl}
         onLoadSuccess={onDocumentLoadSuccess}
@@ -114,6 +159,8 @@ export default function Zine({
       >
         {!isLoading && numPages > 0 && (
           <div
+            ref={containerRef}
+            onMouseDown={handleMouseDown}
             className={`relative transition-opacity ease-in-out ${
               isVisible ? "opacity-100" : "opacity-0"
             }`}
