@@ -102,3 +102,103 @@ html {
 .animate-glow-3 {
   animation: glow-3 10s ease-in-out infinite;
 }
+
+/* Sparkle animations for loader */
+@keyframes sparkle-1 {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0) translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) translateY(-10px);
+  }
+}
+
+@keyframes sparkle-2 {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0) translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.2) translateY(-8px);
+  }
+  70% {
+    opacity: 0.5;
+    transform: scale(0.8) translateY(-15px);
+  }
+}
+
+@keyframes sparkle-3 {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1) translateY(-5px);
+  }
+  80% {
+    opacity: 0.3;
+    transform: scale(0.5) translateY(-12px);
+  }
+}
+
+.animate-sparkle-1 {
+  animation: sparkle-1 2s ease-in-out infinite;
+}
+
+.animate-sparkle-2 {
+  animation: sparkle-2 2.5s ease-in-out infinite 0.3s;
+}
+
+.animate-sparkle-3 {
+  animation: sparkle-3 1.8s ease-in-out infinite 0.6s;
+}
+
+/* Subtle twinkling stars */
+@keyframes twinkle-1 {
+  0%, 100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes twinkle-2 {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  30% {
+    opacity: 0.1;
+  }
+  70% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes twinkle-3 {
+  0%, 100% {
+    opacity: 0.15;
+  }
+  25% {
+    opacity: 0.7;
+  }
+  75% {
+    opacity: 0.25;
+  }
+}
+
+.animate-twinkle-1 {
+  animation: twinkle-1 4s ease-in-out infinite;
+}
+
+.animate-twinkle-2 {
+  animation: twinkle-2 5s ease-in-out infinite 1s;
+}
+
+.animate-twinkle-3 {
+  animation: twinkle-3 6s ease-in-out infinite 2s;
+}
