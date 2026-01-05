@@ -146,17 +146,18 @@ export default function Zine({
   );
 
   return (
-    <div
-      className={`zine-container flex flex-col items-center transition-transform duration-700 ease-out ${
-        isOpen ? "translate-x-0" : "-translate-x-[250px]"
-      }`}
-    >
+    <>
       {isLoading && loadingSpinner}
-      <Document
-        file={pdfUrl}
-        onLoadSuccess={onDocumentLoadSuccess}
-        loading={null}
+      <div
+        className={`zine-container flex flex-col items-center transition-transform duration-700 ease-out ${
+          isOpen ? "translate-x-0" : "-translate-x-[250px]"
+        } ${isLoading ? "hidden" : ""}`}
       >
+        <Document
+          file={pdfUrl}
+          onLoadSuccess={onDocumentLoadSuccess}
+          loading={null}
+        >
         {!isLoading && numPages > 0 && (
           <div
             ref={containerRef}
@@ -241,6 +242,7 @@ export default function Zine({
           background: transparent !important;
         }
       `}</style>
-    </div>
+      </div>
+    </>
   );
 }
