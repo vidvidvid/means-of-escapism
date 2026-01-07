@@ -19,9 +19,9 @@ const Zine = dynamic<ZineProps>(
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen w-full overflow-hidden bg-black">
+    <main className="relative h-dvh w-full overflow-hidden bg-black">
       {/* Zine container */}
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center">
+      <div className="relative z-10 flex h-full flex-col items-center justify-center">
         <Zine
           pdfUrl="/zine.pdf"
           pageWidth={500}
