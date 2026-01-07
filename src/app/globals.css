@@ -19,18 +19,21 @@
   }
 }
 
+html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background: black;
+}
+
 body {
-  background: transparent;
+  background: black;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
   min-height: 100vh;
-}
-
-html {
-  margin: 0;
-  padding: 0;
+  overflow-x: hidden;
 }
 
 /* Magical glow animations - irregular pulsing */
