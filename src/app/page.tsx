@@ -21,7 +21,7 @@ export default function Home() {
   return (
     <main className="relative min-h-screen w-full overflow-hidden bg-black">
       {/* Zine container */}
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center p-4 md:p-8">
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center">
         <Zine
           pdfUrl="/zine.pdf"
           pageWidth={500}

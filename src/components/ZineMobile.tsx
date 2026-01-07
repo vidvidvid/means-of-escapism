@@ -55,19 +55,35 @@ export default function ZineMobile({
   const [isVisible, setIsVisible] = useState(false);
   const [dimensions, setDimensions] = useState(() => {
     if (typeof window === "undefined") {
-      return { width: defaultPageWidth, height: defaultPageHeight };
+      return { width: defaultPageWidth, height: defaultPageHeight, isLandscape: false };
     }
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const aspectRatio = defaultPageHeight / defaultPageWidth;
+    const isLandscape = vw > vh;
 
-    let width = Math.min(vw - 48, 400);
-    let height = width * aspectRatio;
-    if (height > vh - 120) {
-      height = vh - 120;
+    let width: number;
+    let height: number;
+
+    if (isLandscape) {
+      // Landscape: two pages side by side, size for height first
+      height = vh - 40;
       width = height / aspectRatio;
+      // Make sure both pages fit in viewport width
+      if (width * 2 > vw - 32) {
+        width = (vw - 32) / 2;
+        height = width * aspectRatio;
+      }
+    } else {
+      // Portrait: single page
+      width = Math.min(vw - 48, 400);
+      height = width * aspectRatio;
+      if (height > vh - 120) {
+        height = vh - 120;
+        width = height / aspectRatio;
+      }
     }
-    return { width: Math.floor(width), height: Math.floor(height) };
+    return { width: Math.floor(width), height: Math.floor(height), isLandscape };
   });
   const bookRef = useRef<typeof HTMLFlipBook>(null);
 
@@ -86,24 +102,44 @@ export default function ZineMobile({
     }
   }, [numPages, renderedPages, onLoad]);
 
-  // Recalculate dimensions on resize
+  // Recalculate dimensions on resize/orientation change
   useEffect(() => {
     const calculateDimensions = () => {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const aspectRatio = defaultPageHeight / defaultPageWidth;
+      const isLandscape = vw > vh;
 
-      let width = Math.min(vw - 48, 400);
-      let height = width * aspectRatio;
-      if (height > vh - 120) {
-        height = vh - 120;
+      let width: number;
+      let height: number;
+
+      if (isLandscape) {
+        // Landscape: two pages side by side, size for height first
+        height = vh - 40;
         width = height / aspectRatio;
+        // Make sure both pages fit in viewport width
+        if (width * 2 > vw - 32) {
+          width = (vw - 32) / 2;
+          height = width * aspectRatio;
+        }
+      } else {
+        // Portrait: single page
+        width = Math.min(vw - 48, 400);
+        height = width * aspectRatio;
+        if (height > vh - 120) {
+          height = vh - 120;
+          width = height / aspectRatio;
+        }
       }
-      setDimensions({ width: Math.floor(width), height: Math.floor(height) });
+      setDimensions({ width: Math.floor(width), height: Math.floor(height), isLandscape });
     };
 
     window.addEventListener("resize", calculateDimensions);
-    return () => window.removeEventListener("resize", calculateDimensions);
+    window.addEventListener("orientationchange", calculateDimensions);
+    return () => {
+      window.removeEventListener("resize", calculateDimensions);
+      window.removeEventListener("orientationchange", calculateDimensions);
+    };
   }, [defaultPageWidth, defaultPageHeight]);
 
   const onDocumentLoadSuccess = useCallback(
@@ -190,14 +226,15 @@ export default function ZineMobile({
             >
               {/* @ts-expect-error - HTMLFlipBook types are incomplete */}
               <HTMLFlipBook
+                key={dimensions.isLandscape ? "landscape" : "portrait"}
                 ref={bookRef}
                 width={dimensions.width}
                 height={dimensions.height}
                 size="fixed"
-                minWidth={200}
-                maxWidth={400}
-                minHeight={280}
-                maxHeight={600}
+                minWidth={150}
+                maxWidth={500}
+                minHeight={200}
+                maxHeight={800}
                 showCover={true}
                 mobileScrollSupport={true}
                 drawShadow={true}

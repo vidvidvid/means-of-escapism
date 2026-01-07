@@ -185,9 +185,10 @@ export default function ZineDesktop({
     <>
       {isLoading && loadingSpinner}
       <div
-        className={`zine-container flex flex-col items-center transition-transform duration-700 ease-out ${
-          isOpen ? "translate-x-0" : "-translate-x-[250px]"
-        } ${isLoading ? "hidden" : ""}`}
+        className={`zine-container flex flex-col items-center transition-transform duration-700 ease-out ${isLoading ? "hidden" : ""}`}
+        style={{
+          transform: isOpen ? "translateX(0)" : `translateX(-${pageWidth / 2}px)`,
+        }}
       >
         <Document
           file={pdfUrl}
