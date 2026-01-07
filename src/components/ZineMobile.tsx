@@ -13,10 +13,11 @@ interface PageProps {
   pageNumber: number;
   width: number;
   height: number;
+  onRenderSuccess?: () => void;
 }
 
 const ZinePage = forwardRef<HTMLDivElement, PageProps>(
-  ({ pageNumber, width, height }, ref) => {
+  ({ pageNumber, width, height, onRenderSuccess }, ref) => {
     return (
       <div ref={ref} className="zine-page">
         <Page
@@ -26,6 +27,7 @@ const ZinePage = forwardRef<HTMLDivElement, PageProps>(
           renderTextLayer={false}
           renderAnnotationLayer={false}
           loading={null}
+          onRenderSuccess={onRenderSuccess}
         />
       </div>
     );
@@ -48,7 +50,7 @@ export default function ZineMobile({
   onLoad,
 }: ZineMobileProps) {
   const [numPages, setNumPages] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [renderedPages, setRenderedPages] = useState<number>(0);
   const [isVisible, setIsVisible] = useState(false);
   const [dimensions, setDimensions] = useState(() => {
     if (typeof window === "undefined") {
@@ -67,6 +69,21 @@ export default function ZineMobile({
     return { width: Math.floor(width), height: Math.floor(height) };
   });
   const bookRef = useRef<typeof HTMLFlipBook>(null);
+
+  // Loading until all pages are rendered
+  const isLoading = numPages === 0 || renderedPages < numPages;
+
+  const onPageRenderSuccess = useCallback(() => {
+    setRenderedPages((prev) => prev + 1);
+  }, []);
+
+  // Trigger fade-in and onLoad when all pages rendered
+  useEffect(() => {
+    if (numPages > 0 && renderedPages >= numPages) {
+      onLoad?.();
+      setTimeout(() => setIsVisible(true), 50);
+    }
+  }, [numPages, renderedPages, onLoad]);
 
   // Recalculate dimensions on resize
   useEffect(() => {
@@ -91,11 +108,8 @@ export default function ZineMobile({
   const onDocumentLoadSuccess = useCallback(
     ({ numPages }: { numPages: number }) => {
       setNumPages(numPages);
-      setIsLoading(false);
-      onLoad?.();
-      setTimeout(() => setIsVisible(true), 50);
     },
-    [onLoad]
+    []
   );
 
   const pages = Array.from({ length: numPages }, (_, i) => i + 1);
@@ -154,16 +168,19 @@ export default function ZineMobile({
     <>
       {isLoading && loadingSpinner}
       <div
-        className={`zine-container flex flex-col items-center ${
-          isLoading ? "hidden" : ""
-        }`}
+        className="zine-container flex flex-col items-center"
+        style={{
+          position: isLoading ? "absolute" : "relative",
+          visibility: isLoading ? "hidden" : "visible",
+          pointerEvents: isLoading ? "none" : "auto",
+        }}
       >
         <Document
           file={pdfUrl}
           onLoadSuccess={onDocumentLoadSuccess}
           loading={null}
         >
-          {!isLoading && numPages > 0 && (
+          {numPages > 0 && (
             <div
               className={`relative transition-opacity ease-in-out ${
                 isVisible ? "opacity-100" : "opacity-0"
@@ -201,6 +218,7 @@ export default function ZineMobile({
                     pageNumber={pageNum}
                     width={dimensions.width}
                     height={dimensions.height}
+                    onRenderSuccess={onPageRenderSuccess}
                   />
                 ))}
               </HTMLFlipBook>
