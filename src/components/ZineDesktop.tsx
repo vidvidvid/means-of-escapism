@@ -278,6 +278,26 @@ export default function ZineDesktop({
         .stf__item {
           background: transparent !important;
         }
+
+        /* Right-side pages (odd: 1st/cover, 3rd, 5th...) - round right corners */
+        .stf__item:nth-child(odd) {
+          border-radius: 0 8px 8px 0;
+        }
+        .stf__item:nth-child(odd) .zine-page,
+        .stf__item:nth-child(odd) .zine-page canvas,
+        .stf__item:nth-child(odd) .react-pdf__Page__canvas {
+          border-radius: 0 8px 8px 0;
+        }
+
+        /* Left-side pages (even: 2nd, 4th, 6th...) - round left corners */
+        .stf__item:nth-child(even) {
+          border-radius: 8px 0 0 8px;
+        }
+        .stf__item:nth-child(even) .zine-page,
+        .stf__item:nth-child(even) .zine-page canvas,
+        .stf__item:nth-child(even) .react-pdf__Page__canvas {
+          border-radius: 8px 0 0 8px;
+        }
       `}</style>
       </div>
     </>
